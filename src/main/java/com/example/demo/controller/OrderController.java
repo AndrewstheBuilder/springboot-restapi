@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,48 @@ public class OrderController {
 			throw new Exception("Invalid order item");
 		}
 		Orders newOrder = new Orders(customerId, orderItem, orderCost);
-		return ResponseEntity.ok(orderServices.saveOrder(newOrder));
+		boolean specialOffer = false;
+		return ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer));
 	}
+	
+	@PostMapping("/orders/batchOrder")
+	public List<ResponseEntity<Orders>> saveBatchOrder(@RequestParam("customerId") int customerId, @RequestParam List<String> orderItems) throws Exception{
+		int appleCounter = 0;
+		int orangeCounter = 0;
+		boolean specialOffer = false;
+		List<ResponseEntity<Orders>> res = new ArrayList<>();
+		for(String orderName : orderItems) {
+			if(!orderName.equals("Apple") && !orderName.equals("Orange"))
+				throw new Exception("Invalid order items");
+			else if(orderName.equals("Apple")) {
+				appleCounter += 1;
+				if(appleCounter == 2) {
+					appleCounter = 0;//reset counter on 2nd apple
+					Orders newOrder = new Orders(customerId, orderName, 0.0);
+					specialOffer = true;
+					res.add(ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer)));
+				} else {
+					Orders newOrder = new Orders(customerId, orderName, 0.60);
+					specialOffer = false;
+					res.add(ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer)));
+				}
+			}
+			else if(orderName.equals("Orange"))
+			{
+				orangeCounter += 1;
+				if(orangeCounter == 3) {
+					orangeCounter = 0; //reset counter on third orange
+					Orders newOrder = new Orders(customerId, orderName, 0.0);
+					specialOffer = true;
+					res.add(ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer)));
+				} else {
+					Orders newOrder = new Orders(customerId, orderName, 0.25);
+					specialOffer = false;
+					res.add(ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer)));
+				}
+			}				
+		}
+		return res;
+	}
+	
 }
