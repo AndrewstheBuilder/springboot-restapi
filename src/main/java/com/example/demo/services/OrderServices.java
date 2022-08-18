@@ -28,8 +28,12 @@ public class OrderServices {
 		return ordersRepository.save(order);
 	}
 	
+	public List<Orders> getAllOrders() {
+		return ordersRepository.findAll();
+	}
+	
 	public String getOrderSummaryForCustomerId(int customerId) {
-		List<Orders> customerOrders = ordersRepository.getOrdersByCustomerId(customerId);
+		List<Orders> customerOrders = ordersRepository.getOrderByCustomerId(customerId);
 		double totalCost = 0.0;
 		String shoppingList = null;
 		for(Orders order: customerOrders) {
@@ -45,6 +49,10 @@ public class OrderServices {
       	double totalCostRounded = bd.doubleValue();
 		if(customerOrders.isEmpty()) return null;
 	   	return "Customer id:" + Integer.toString(customerId)+ "\norder info..." + "\nShopping List:" + shoppingList + "\nTotal Cost:"+totalCostRounded ;
+	}
+	
+	public String getOrderByOrderId(int orderId) {
+		return ordersRepository.getOrderByOrderId(orderId).toString();
 	}
 
 }

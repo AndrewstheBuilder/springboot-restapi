@@ -1,28 +1,21 @@
 package com.example.demo;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc; 
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.example.demo.entity.Orders;
 import com.example.demo.services.OrderServices;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class DemoApplicationTests {
+class DemoApplicationServiceTests {
 	@Autowired
 	private OrderServices orderServices;
-    @Autowired
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mockMvc;
-	
-//	@Test
-//	void contextLoads() {
-//	}
 	
 	@Test
 	public void saveOrdersForCustomerId911() throws Exception {
@@ -37,9 +30,10 @@ class DemoApplicationTests {
 		String res = orderServices.getOrderSummaryForCustomerId(911);
 		assertNotNull(res);
 	}
-
+	
 	@Test
-	public void saveBatchOrderForCustomerId911() {
-		mockMvc.perform(post("/api/v1/orders/batchOrder?customerId=2&orderItems=Apple&orderItems=Apple&orderItems=Apple&orderItems=Orange&orderItems=Orange&orderItems=Orange"))
+	public void getAllOrders() throws Exception {
+		List<Orders> orders = orderServices.getAllOrders();
+		assertTrue(orders.isEmpty()==false);
 	}
 }

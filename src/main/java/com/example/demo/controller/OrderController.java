@@ -37,6 +37,16 @@ public class OrderController {
 		return ResponseEntity.ok(orderServices.saveOrder(newOrder, specialOffer));
 	}
 	
+	@GetMapping("/orders/getOrderByOrderId")
+	public ResponseEntity<String> getOrderByOrderId(@RequestParam int orderId){
+		return ResponseEntity.ok(orderServices.getOrderByOrderId(orderId));
+	}
+	
+	@GetMapping("/orders/getAllOrders")
+	public ResponseEntity<List<Orders>> getAllOrders(){
+		return ResponseEntity.ok(orderServices.getAllOrders());
+	}
+	
 	@PostMapping("/orders/batchOrder")
 	public List<ResponseEntity<Orders>> saveBatchOrder(@RequestParam("customerId") int customerId, @RequestParam List<String> orderItems) throws Exception{
 		int appleCounter = 0;
